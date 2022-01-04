@@ -16,10 +16,10 @@ app.get('*', (req, res) => {
         })
 });
 
-trelloInteractor.getBoards((boards) => {
-    console.log(boards);
-}, (err) => {
-    console.log(err);
-});
+// trelloInteractor.getBoards((boards) => {
+//     console.log(boards);
+// }, (err) => {
+//     console.log(err);
+// });
 
 app.listen(3000);
