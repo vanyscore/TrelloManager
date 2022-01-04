@@ -1,7 +1,7 @@
 const express = require('express');
 const apiControllers = require('./controllers/api_controllers');
-
 const app = express();
+const trelloInteractor = require('./interactors/trello_interactor');
 
 app.use(express.json());
 
@@ -14,6 +14,12 @@ app.get('*', (req, res) => {
         .json({
             message: 'Путь не найден'
         })
+});
+
+trelloInteractor.getBoards((boards) => {
+    console.log(boards);
+}, (err) => {
+    console.log(err);
 });
 
 app.listen(3000);
