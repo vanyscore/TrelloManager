@@ -1,13 +1,18 @@
 const express = require('express');
-const apiControllers = require('./controllers/api_controllers');
-const app = express();
+const cookieParser = require('cookie-parser');
+const controllers = require('./controllers/controllers');
 const trelloInteractor = require('./interactors/trello_interactor');
+const accessTokenCheckerMiddleware = require('./middlewares/access_token_checker_middleware');
+
+const app = express();
+const apiRouter = express.Router();
 
 app.use(express.json());
-
-const apiRouter = express.Router();
+app.use(cookieParser());
+app.use(accessTokenCheckerMiddleware);
 app.use('/api', apiRouter);
-apiControllers.handle(apiRouter);
+
+controllers.handle(apiRouter);
 
 app.get('*', (req, res) => {
     res.status(404)

@@ -1,14 +1,14 @@
 const jwt = require('jwt-simple');
-const secretKey = 'WtM780eGVcje7WdBKjNK'
+const secretKey = 'WtM780eGVcje7WdBKjNK';
+const regex = '.+\\..+\\..+';
 
 module.exports = {
-    generateKey: function(userId, role) {
-        return jwt.encode({
-            userId: userId,
-            role: role
-        }, secretKey);
+    generateKey: function(payload) {
+        return jwt.encode(payload, secretKey);
     },
-    verifyKey: function(token) {
+    parsePayload: function(token) {
+        if (!token.match(regex)) return null;
+
         return jwt.decode(token, secretKey)
     }
 }

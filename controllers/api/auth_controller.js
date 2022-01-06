@@ -36,7 +36,10 @@ module.exports = {
 
                         if (userPassword != null) {
                             const user = await sequelizeManager.User.findByPk(userByEmail.id);
-                            const accessToken = accessTokenManager.generateKey(user.id, user.role);
+                            const accessToken = accessTokenManager.generateKey({
+                                id: user.id,
+                                role: user.role
+                            });
 
                             res.cookie('access_token', accessToken)
                                 .json({
@@ -64,52 +67,88 @@ module.exports = {
             }
         });
 
-        apiRouter.post('/register', async function (req, res) {
+        apiRouter.post('/register/:invite_token', async function (req, res) {
            try {
                console.log('/register body:');
                console.log(req.body);
+
+               const inviteToken = req.params['invite_token'].split('=')[1];
+
+               console.log('Ключ приглашения: ' + inviteToken);
 
                const fullName = req.body.fullName;
                const password = req.body.password;
                const email = req.body.email;
 
-               if (email.match(emailRegex)) {
-                   if (password.toString().match(passwordRegex)) {
-                       const user = await sequelizeManager.User.create({
-                           fullName: fullName,
-                           role: roles.client
-                       });
+               if (inviteToken == null) {
+                   res.json({
+                       message: 'Для регистрации необходим ключ приглашения'
+                   }).status(400);
+               }
 
-                       const userPassword = await sequelizeManager.UserPassword.create({
-                           userId: user.id,
-                           passwordHash: createHash('SHA256').update(password).digest('hex')
-                       })
+               const inviteTokenDB = await sequelizeManager.InviteToken.findOne({
+                   where: {
+                       token: inviteToken
+                   }});
 
-                       const userInfo = await sequelizeManager.UserInfo.create({
-                           userId: user.id,
-                           email: email
-                       });
+               if (inviteTokenDB != null && inviteTokenDB.isActual) {
+                   inviteTokenDB.isActual = false;
+                   await inviteTokenDB.save();
 
-                       res.json({
-                           message: 'Регистрация прошла успешно'
-                       }).status(201);
+                   if (email.match(emailRegex)) {
+                       if (password.toString().match(passwordRegex)) {
+                           const user = await sequelizeManager.User.create({
+                               fullName: fullName,
+                               role: roles.client
+                           });
+
+                           const userPassword = await sequelizeManager.UserPassword.create({
+                               userId: user.id,
+                               passwordHash: createHash('SHA256').update(password).digest('hex')
+                           })
+
+                           const userInfo = await sequelizeManager.UserInfo.create({
+                               userId: user.id,
+                               email: email
+                           });
+
+                           res.json({
+                               message: 'Регистрация прошла успешно'
+                           }).status(201);
+                       } else {
+                           res.json({
+                               message: 'Минимальная длина пароля - 8 символов. Также пароль не может содержать пробел'
+                           }).status(400);
+                       }
                    } else {
                        res.json({
-                           message: 'Минимальная длина пароля - 8 символов. Также пароль не может содержать пробел'
+                           message: 'Некорректная почта'
                        }).status(400);
                    }
                } else {
                    res.json({
-                       message: 'Некорректная почта'
+                       message: 'Ссылка на регистрацию не действительна'
                    }).status(400);
                }
+
+
            } catch (ex) {
                res.status(500);
            }
         });
 
         apiRouter.put('/invite', (req, res) => {
+            const user = req.user
 
+            if (user.role === roles.admin) {
+                res.status(200).json({
+                    message: 'Попытка администратором создать приглашение в систему'
+                })
+            } else {
+                res.status(200).json({
+                    message: 'Только адмнистратор может создавать пришлашения на регистрацию'
+                });
+            }
         })
     },
 }

@@ -41,7 +41,20 @@ const UserPassword = sequelize.define('user_password', {
     }
 }, {
     freezeTableName: true
-})
+});
+
+const InviteToken = sequelize.define('invite_token', {
+    token: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    isActual: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+    }
+}, {
+    freezeTableName: true
+});
 
 sequelize.sync({
     force: true
@@ -84,3 +97,4 @@ module.exports.sequalize = sequelize;
 module.exports.User = User;
 module.exports.UserPassword = UserPassword;
 module.exports.UserInfo = UserInfo;
+module.exports.InviteToken = InviteToken;
