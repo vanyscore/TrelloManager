@@ -9,14 +9,14 @@
     <th>Состояние</th>
   </tr>
   <tr>
-    <td>GET</td>
+    <td>PUT</td>
     <td>/api/invite</td>
-    <td>Не готов</td>
+    <td>Готов</td>
   </tr>
   <tr>
     <td>POST</td>
     <td>/api/register</td>
-    <td>Готов (ожидается связка с /invite)</td>
+    <td>Готов</td>
   </tr>
   <tr>
     <td>POST</td>
