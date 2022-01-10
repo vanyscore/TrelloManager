@@ -12,8 +12,14 @@ module.exports = {
                 console.log('/auth body:');
                 console.log(req.body);
 
-                const email = req.body.email;
-                const password = req.body.password;
+                const email = req.body['email'];
+                const password = req.body['password'];
+
+                if (email == null || password == null) {
+                    res.status(400).json({
+                        message: 'Требуется логин и пароль'
+                    })
+                }
 
                 if (email.match(emailRegex)) {
                     const userByEmail = await sequelizeManager.UserInfo.findOne({
@@ -67,14 +73,15 @@ module.exports = {
             }
         });
 
-        apiRouter.post('/register/:invite_token', async function (req, res) {
+        apiRouter.post('/register/:invite_token?', async function (req, res) {
            try {
                console.log('/register body:');
                console.log(req.body);
 
-               const inviteToken = req.params['invite_token'].split('=')[1];
+               const inviteToken = req.params['invite_token'];
 
-               console.log('Ключ приглашения: ' + inviteToken);
+               console.log('Ключ приглашения:');
+               console.log(inviteToken);
 
                const fullName = req.body.fullName;
                const password = req.body.password;
@@ -83,6 +90,12 @@ module.exports = {
                if (inviteToken == null) {
                    res.json({
                        message: 'Для регистрации необходим ключ приглашения'
+                   }).status(400);
+               }
+
+               if (fullName == null || password == null || email == null) {
+                   res.json({
+                       message: 'Для регистрации необходимо указать ФИО, пароль и почту'
                    }).status(400);
                }
 
@@ -137,17 +150,33 @@ module.exports = {
            }
         });
 
-        apiRouter.put('/invite', (req, res) => {
+        apiRouter.put('/invite', async function (req, res) {
             const user = req.user
 
-            if (user.role === roles.admin) {
-                res.status(200).json({
-                    message: 'Попытка администратором создать приглашение в систему'
-                })
+            if (user != null) {
+                if (user.role === roles.admin) {
+                    const seconds = new Date().getSeconds();
+                    const inviteKey = accessTokenManager.generateKey({
+                        createdAtInSeconds: seconds
+                    });
+
+                    await sequelizeManager.InviteToken.create({
+                        token: inviteKey,
+                        isActual: true
+                    });
+
+                    res.status(201).json({
+                        inviteKey: inviteKey
+                    });
+                } else {
+                    res.status(200).json({
+                        message: 'Только адмнистратор может создавать пришлашения на регистрацию'
+                    });
+                }
             } else {
-                res.status(200).json({
-                    message: 'Только адмнистратор может создавать пришлашения на регистрацию'
-                });
+                res.status(401).json({
+                    message: 'Вызов данного метода требует авторизации'
+                })
             }
         })
     },

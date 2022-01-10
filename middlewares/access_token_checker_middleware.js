@@ -2,6 +2,8 @@ const tokenManager = require('../managers/access_token_manager');
 const sequelizeManager = require('../models/sequelize_manager');
 
 module.exports = async function(req, res, next) {
+    req.user = null;
+
     if (req.cookies !== undefined) {
         const accessToken = req.cookies['access_token'];
 
