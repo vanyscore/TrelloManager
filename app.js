@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const controllers = require('./controllers/controllers');
 const trelloInteractor = require('./interactors/trello_interactor');
+const sequelize = require('./models/sequelize_manager');
 const accessTokenCheckerMiddleware = require('./middlewares/access_token_checker_middleware');
 
 const app = express();

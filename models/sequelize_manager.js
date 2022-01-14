@@ -57,7 +57,7 @@ const InviteToken = sequelize.define('invite_token', {
 });
 
 sequelize.sync({
-    force: true
+    force: false
 }).then((seq) => {
     console.log('database synced');
 
