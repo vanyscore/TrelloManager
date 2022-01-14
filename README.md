@@ -7,51 +7,61 @@
     <th>Тип</th>
     <th>Путь</th>
     <th>Состояние</th>
+    <th>Роль</th>
   </tr>
   <tr>
     <td>PUT</td>
     <td>/api/invite</td>
     <td>Готов</td>
+    <td>Админ</td>
   </tr>
   <tr>
     <td>POST</td>
     <td>/api/register</td>
     <td>Готов</td>
+    <td>*</td>
   </tr>
   <tr>
     <td>POST</td>
     <td>/api/auth</td>
     <td>Готов</td>
+    <td>*</td>
   </tr>
   <tr>
     <td>GET</td>
     <td>/api/profile</td>
-    <td>Не готов</td>
+    <td>Готов</td>
+    <td>*</td>
   </tr>
   <tr>
     <td>GET</td>
     <td>/api/user/{n}</td>
-    <td>Не готов</td>
+    <td>Готов</td>
+    <td>Админ</td>
   </tr>
   <tr>
     <td>GET</td>
     <td>/api/users</td>
-    <td>Не готов</td>
+    <td>Готов</td>
+    <td>Админ</td>
   </tr>
   <tr>
     <td>GET</td>
     <td>/api/cards</td>
     <td>Не готов</td>
+    <td>Админ/Клиент</td>
   </tr>
   <tr>
     <td>GET</td>
     <td>/api/card/{n}</td>
     <td>Не готов</td>
+    <td>Админ/Клиент</td>
   </tr>
   <tr>
-    <td>POST</td>
+    <td>PUT</td>
     <td>/api/card/{n}</td>
     <td>Не готов</td>
+    <td>Клиент</td>
   </tr>
 </table>
 
