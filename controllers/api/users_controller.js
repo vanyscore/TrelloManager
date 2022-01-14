@@ -67,5 +67,41 @@ module.exports = {
                 res.status(500);
             }
         });
+
+        apiRouter.get('/users', async function(req, res) {
+            const user = req.user;
+
+            try {
+                if (user == null) {
+                    res.status(401).json({
+                        message: "Вызов данного метода требует авторизации"
+                    });
+                } else {
+                    if (user.role === roles.client) {
+                        res.status(403).json({
+                            message: "Вам запрещен доступ к вызову данного метода"
+                        });
+                    }
+                }
+
+                const users = await sequelize.User.findAll();
+
+                for (const usr of users) {
+                    const userInfo = await sequelize.UserInfo.findOne(
+                        {
+                            where: {
+                                userId: usr.id
+                            }
+                        }
+                    );
+
+                    usr.email = userInfo.email;
+                }
+
+                res.status(200).json(users);
+            } catch (ex) {
+                res.status(500);
+            }
+        });
     }
 }
