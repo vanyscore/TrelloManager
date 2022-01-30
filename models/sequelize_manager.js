@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { createHash } = require('crypto');
 const roles = require("./roles");
+const cardStatus = require('../models/card_status')
 
 const sequelize = new Sequelize('trello_manager_db', 'root', '', {
     host: 'localhost',
@@ -56,8 +57,32 @@ const InviteToken = sequelize.define('invite_token', {
     freezeTableName: true
 });
 
+const Card = sequelize.define('card', {
+   authorId: {
+       type: DataTypes.INTEGER,
+       allowNull: false
+   },
+   title: {
+       type: DataTypes.STRING,
+       allowNull: false
+   },
+   description: {
+       type: DataTypes.STRING,
+       allowNull: false
+   } ,
+   trelloId: {
+       type: DataTypes.STRING
+   },
+   statusCode: {
+       type: DataTypes.INTEGER,
+       allowNull: false
+   }
+}, {
+    freezeTableName: true
+});
+
 sequelize.sync({
-    force: false
+    force: true
 }).then((seq) => {
     console.log('database synced');
 
@@ -90,6 +115,18 @@ sequelize.sync({
         }
     });
 
+    Card.count({}).then(async () => {
+        await Card.create({
+            authorId: 1,
+            title: 'Тестовая карта',
+            description: 'Описание тестовой карты',
+            trelloId: null,
+            statusCode: cardStatus.ready.code
+        });
+    }).then(() => {
+        console.log('test card created')
+    })
+
     return seq;
 });
 
@@ -98,3 +135,4 @@ module.exports.User = User;
 module.exports.UserPassword = UserPassword;
 module.exports.UserInfo = UserInfo;
 module.exports.InviteToken = InviteToken;
+module.exports.Card = Card;
