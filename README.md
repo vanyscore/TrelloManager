@@ -74,6 +74,6 @@
 
 
 ```
-module.exports.apiKey = '';
-module.exports.serverToken = '';
+module.exports.apiKey = ''
+module.exports.serverToken = ''
 ```

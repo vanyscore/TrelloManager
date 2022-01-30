@@ -1,12 +1,12 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const { createHash } = require('crypto');
-const roles = require("./roles");
+const { Sequelize, DataTypes } = require("sequelize")
+const { createHash } = require('crypto')
+const roles = require("./roles")
 const cardStatus = require('../models/card_status')
 
 const sequelize = new Sequelize('trello_manager_db', 'root', '', {
     host: 'localhost',
     dialect: 'mysql',
-});
+})
 
 /// Описание сущности "Пользователей"
 const User = sequelize.define('user', {
@@ -20,7 +20,7 @@ const User = sequelize.define('user', {
     }
 }, {
     freezeTableName: true
-});
+})
 
 const UserInfo = sequelize.define('user_info', {
    userId: {
@@ -31,7 +31,7 @@ const UserInfo = sequelize.define('user_info', {
    }
 }, {
     freezeTableName: true
-});
+})
 
 const UserPassword = sequelize.define('user_password', {
     userId: {
@@ -42,7 +42,7 @@ const UserPassword = sequelize.define('user_password', {
     }
 }, {
     freezeTableName: true
-});
+})
 
 const InviteToken = sequelize.define('invite_token', {
     token: {
@@ -55,7 +55,7 @@ const InviteToken = sequelize.define('invite_token', {
     }
 }, {
     freezeTableName: true
-});
+})
 
 const Card = sequelize.define('card', {
    authorId: {
@@ -79,12 +79,12 @@ const Card = sequelize.define('card', {
    }
 }, {
     freezeTableName: true
-});
+})
 
 sequelize.sync({
-    force: true
+    force: false
 }).then((seq) => {
-    console.log('database synced');
+    console.log('database synced')
 
     // Добавить админа если его нет в базе
     User.count({}).then(async function(n) {
@@ -94,26 +94,26 @@ sequelize.sync({
                 role: roles.admin
             }).then(() => {
                 console.log('admin created')
-            });
+            })
 
-            const adminPassword = '12345678';
+            const adminPassword = '12345678'
             const adminPasswordHash = createHash('SHA256')
                 .update(adminPassword)
-                .digest('hex');
+                .digest('hex')
 
             await UserPassword.create({
                 userId: 1,
                 passwordHash: adminPasswordHash
-            });
+            })
 
             await UserInfo.create({
                 userId: 1,
                 email: 'admin@this.com'
-            });
+            })
 
-            console.log('admin created with passwordHash: ' + adminPasswordHash);
+            console.log('admin created with passwordHash: ' + adminPasswordHash)
         }
-    });
+    })
 
     Card.count({}).then(async () => {
         await Card.create({
@@ -122,17 +122,17 @@ sequelize.sync({
             description: 'Описание тестовой карты',
             trelloId: null,
             statusCode: cardStatus.ready.code
-        });
+        })
     }).then(() => {
         console.log('test card created')
     })
 
-    return seq;
-});
+    return seq
+})
 
-module.exports.sequalize = sequelize;
-module.exports.User = User;
-module.exports.UserPassword = UserPassword;
-module.exports.UserInfo = UserInfo;
-module.exports.InviteToken = InviteToken;
-module.exports.Card = Card;
+module.exports.sequalize = sequelize
+module.exports.User = User
+module.exports.UserPassword = UserPassword
+module.exports.UserInfo = UserInfo
+module.exports.InviteToken = InviteToken
+module.exports.Card = Card

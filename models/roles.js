@@ -1,5 +1,5 @@
-const admin = 'admin';
-const client = 'client';
+const admin = 'admin'
+const client = 'client'
 
-module.exports.admin = admin;
-module.exports.client = client;
+module.exports.admin = admin
+module.exports.client = client
