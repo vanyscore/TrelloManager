@@ -58,9 +58,15 @@
     <td>Админ/Клиент</td>
   </tr>
   <tr>
-    <td>PUT</td>
-    <td>/api/card/{n}</td>
+    <td>POST</td>
+    <td>/api/card</td>
     <td>Не готов</td>
+    <td>Клиент/Админ</td>
+  </tr>
+  <tr>
+    <td>PUT</td>
+    <td>/api/card</td>
+    <td>Готов</td>
     <td>Клиент</td>
   </tr>
 </table>
@@ -74,6 +80,11 @@
 
 
 ```
-module.exports.apiKey = ''
-module.exports.serverToken = ''
+module.exports.apiKey = '?'
+module.exports.serverToken = '?'
+module.exports.boardKey = '?'
+module.exports.listSentKey = '?'
+module.exports.listAcceptedKey = '?'
+module.exports.listInProgressKey = '?'
+module.exports.listReadyKey = '?'
 ```

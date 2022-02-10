@@ -2,6 +2,7 @@ const trelloInteractor = require('../../interactors/trello_interactor')
 const sequelize = require('../../models/sequelize_manager')
 const roles = require('../../models/roles')
 const cardStatus = require('../../models/card_status')
+const syncManager = require('../../managers/trello_cards_sync_manager')
 
 function parseCard(card, user) {
     return {
@@ -91,6 +92,8 @@ module.exports = {
                     })
 
                     console.log('card created')
+
+                    syncManager.sync().then(r => null)
 
                     res.status(200).end()
                 }

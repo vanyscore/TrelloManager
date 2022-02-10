@@ -115,7 +115,7 @@ sequelize.sync({
         }
     })
 
-    Card.count({}).then(async () => {
+    /*Card.count({}).then(async () => {
         await Card.create({
             authorId: 1,
             title: 'Тестовая карта',
@@ -125,7 +125,7 @@ sequelize.sync({
         })
     }).then(() => {
         console.log('test card created')
-    })
+    })*/
 
     return seq
 })

@@ -1,7 +1,10 @@
-const model = function(code, string) {
+const trelloKeys = require('../trello_keys')
+
+const model = function(code, string, trelloListId) {
     return {
         code: code,
-        info: string
+        info: string,
+        trelloListId: trelloListId
     }
 }
 
@@ -10,17 +13,12 @@ const _acceptedCode = 2
 const _inProgressCode = 3
 const _readyCode = 4
 
-const _sentId = '61eeaa2e4d9c8f7cb355daea'
-const _acceptedId = '61f6a9cac8294c51056c94ba'
-const _inProgressId = '61f6a97d7c02804eb97dd9d5'
-const _readyId = '61f6a98712cd7a4633acaa3b'
-
 module.exports = {
 
-    sent: model(_sentCode, 'sent'),
-    accepted: model(_acceptedCode, 'accepted'),
-    inProgress: model(_inProgressCode, 'inProgress'),
-    ready: model(_readyCode, 'ready'),
+    sent: model(_sentCode, 'sent', trelloKeys.listSentKey),
+    accepted: model(_acceptedCode, 'accepted', trelloKeys.listAcceptedKey),
+    inProgress: model(_inProgressCode, 'inProgress', trelloKeys.listInProgressKey),
+    ready: model(_readyCode, 'ready', trelloKeys.listReadyKey),
 
     parseByCode: function(code) {
         switch(code) {
